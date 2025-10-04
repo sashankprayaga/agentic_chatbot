@@ -27,5 +27,23 @@ class DisplayResultUI:
                         st.write(user_message)
                     with st.chat_message("assistant"):
                         st.write(value['messages'].content)
+        
+        elif usecase == "Chatbot with External Websearch":
+            # prepare state and invoke graph
+            initial_state = {"messages":[user_message]}
+            res = graph.invoke(initial_state)
+            for messages in res['messages']:
+                if type(messages) == HumanMessage:
+                    with st.chat_message("user"):
+                        st.write(messages.content)
+                elif type(messages) == ToolMessage:
+                    with st.chat_message("assistant"):
+                        st.write("Tool Call Start")
+                        st.write(messages.content)
+                        st.write("Tool Call End")
+                
+                elif type(messages) == AIMessage and messages.content:
+                    with st.chat_message("assistant"):
+                        st.write(messages.content)
 
         
